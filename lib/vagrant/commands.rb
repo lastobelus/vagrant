@@ -93,6 +93,15 @@ module Vagrant
       env.vm.resume
     end
 
+    # Provision a running vagrant instance.
+    # This command requires that an instance already be brought up with
+    # `vagrant up`.
+    def provision
+      env.require_persisted_vm
+      env.vm.execute!(Actions::VM::Provision)
+    end
+
+    
     # Export and package the current vm
     #
     # This command requires that an instance be powered off
