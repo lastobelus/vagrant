@@ -47,13 +47,14 @@ class EnvironmentTest < Test::Unit::TestCase
     end
 
     should "create the environment with given cwd, load it, and return it" do
-      Vagrant::Environment.expects(:new).with(@cwd).once.returns(@env)
+      opts = {:cwd =>@cwd}
+      Vagrant::Environment.expects(:new).with(opts).once.returns(@env)
       @env.expects(:load!).returns(@env)
-      assert_equal @env, Vagrant::Environment.load!(@cwd)
+      assert_equal @env, Vagrant::Environment.load!(opts)
     end
 
     should "work without a given cwd" do
-      Vagrant::Environment.expects(:new).with(nil).returns(@env)
+      Vagrant::Environment.expects(:new).with({}).returns(@env)
 
       assert_nothing_raised {
         env = Vagrant::Environment.load!
@@ -64,9 +65,9 @@ class EnvironmentTest < Test::Unit::TestCase
 
   context "initialization" do
     should "set the cwd if given" do
-      cwd = "foobarbaz"
-      env = Vagrant::Environment.new(cwd)
-      assert_equal cwd, env.cwd
+      opts = {:cwd =>"foobarbaz"}
+      env = Vagrant::Environment.new(opts)
+      assert_equal "foobarbaz", env.cwd
     end
 
     should "default to pwd if cwd is nil" do

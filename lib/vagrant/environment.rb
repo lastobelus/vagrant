@@ -24,8 +24,8 @@ module Vagrant
       # Loads and returns an environment given a specific working
       # directory. If a working directory is not given, it will default
       # to the pwd.
-      def load!(cwd=nil)
-        Environment.new(cwd).load!
+      def load!(opts={})
+        Environment.new(opts).load!
       end
 
       # Verifies that VirtualBox is installed and that the version of
@@ -45,8 +45,8 @@ module Vagrant
       end
     end
 
-    def initialize(cwd=nil)
-      @cwd = cwd
+    def initialize(opts={})
+      @cwd = opts[:cwd]
     end
 
     #---------------------------------------------------------------

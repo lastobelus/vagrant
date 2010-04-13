@@ -219,8 +219,8 @@ msg
 
       # Runs a command in the current environment by loading the environment
       # of the current working directory prior to executing.
-      def execute(command, opts, *args)        
-        env = Environment.load!
+      def execute(command, opts, *args)
+        env = Environment.load!(opts)
         env.commands.send(command, *args)
       end
     end
