@@ -91,6 +91,7 @@ module Vagrant
         @forwarded_ports = {}
         @shared_folders = {}
         @provisioner = nil
+        @bootmode = :headless
       end
 
       def forward_port(name, guestport, hostport, protocol="TCP")

@@ -22,6 +22,6 @@ Usage: #{command.full_name} #{all_options_string}
 EOS
 
   run do |command|
-    Vagrant::Commands.execute(:provision)
+    Vagrant::Commands.execute(:provision, {})
   end
 end

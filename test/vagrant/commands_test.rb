@@ -300,7 +300,7 @@ class CommandsTest < Test::Unit::TestCase
 
         Vagrant::Environment.expects(:load!).returns(@env)
         @env.commands.expects(:send).with(method, *args).once
-        Vagrant::Commands.execute(method, *args)
+        Vagrant::Commands.execute(method, {}, *args)
       end
     end
   end
