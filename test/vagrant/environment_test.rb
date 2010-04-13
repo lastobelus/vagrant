@@ -213,6 +213,7 @@ class EnvironmentTest < Test::Unit::TestCase
         assert @env.load_root_path!(Pathname.new(path))
         assert_equal path, @env.root_path
       end
+      
     end
 
     context "loading config" do
@@ -234,6 +235,12 @@ class EnvironmentTest < Test::Unit::TestCase
 
       should "load from the project root" do
         File.expects(:exist?).with(File.join(PROJECT_ROOT, "config", "default.rb")).once
+        @env.load_config!
+      end
+
+      should "load from specified vagrantfile" do
+        @env.vagrantfile = "/foo/Vagrantfoo"
+        File.expects(:exist?).with(File.expand_path("/foo/Vagrantfoo")).once
         @env.load_config!
       end
 

@@ -9,6 +9,7 @@ module Vagrant
     include Util
 
     attr_accessor :cwd
+    attr_accessor :vagrantfile
     attr_reader :root_path
     attr_reader :config
     attr_reader :box
@@ -47,6 +48,8 @@ module Vagrant
 
     def initialize(opts={})
       @cwd = opts[:cwd]
+      @vagrantfile = opts[:vagrantfile]
+      @vagrantfile = Pathname.new(@vagrantfile) unless @vagrantfile.nil?
     end
 
     #---------------------------------------------------------------
@@ -132,6 +135,7 @@ module Vagrant
       load_paths << File.join(box.directory, ROOTFILE_NAME) if box
       load_paths << File.join(home_path, ROOTFILE_NAME) if home_path
       load_paths << File.join(root_path, ROOTFILE_NAME) if root_path
+      load_paths << vagrantfile if vagrantfile
 
       # Clear out the old data
       Config.reset!(self)
