@@ -3,7 +3,6 @@ require File.join(File.dirname(__FILE__), '..', '..', '..', 'test_helper')
 class ForwardPortsActionTest < Test::Unit::TestCase
   setup do
     @mock_vm, @vm, @action = mock_action(Vagrant::Actions::VM::ForwardPorts)
-    mock_config
   end
 
   context "checking for colliding ports" do
@@ -83,7 +82,7 @@ class ForwardPortsActionTest < Test::Unit::TestCase
       end
 
       @vm.expects(:forwarded_ports).returns(forwarded_ports)
-      @vm.expects(:save).with(true).once
+      @vm.expects(:save).once
       @action.forward_ports
     end
   end
@@ -93,7 +92,7 @@ class ForwardPortsActionTest < Test::Unit::TestCase
       forwarded_ports = []
       5.times do |i|
         port = mock("port#{i}")
-        port.expects(:destroy).with(true).once
+        port.expects(:destroy).once
         forwarded_ports << port
       end
 

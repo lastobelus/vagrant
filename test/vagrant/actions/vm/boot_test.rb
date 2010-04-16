@@ -4,12 +4,11 @@ class BootActionTest < Test::Unit::TestCase
   setup do
     @runner, @vm, @action = mock_action(Vagrant::Actions::VM::Boot)
     @runner.stubs(:invoke_callback)
-    mock_config
   end
 
   context "preparing" do
     should "add the root shared folder" do
-      @runner.env.config.vm.expects(:share_folder).with("vagrant-root", @runner.env.config.vm.project_directory, @runner.env.root_path).once
+      @runner.env.config.vm.expects(:share_folder).with("v-root", @runner.env.config.vm.project_directory, @runner.env.root_path).once
       @action.prepare
     end
   end
@@ -33,8 +32,10 @@ class BootActionTest < Test::Unit::TestCase
   end
 
   context "booting" do
-    should "start the VM in headless mode" do
-      @vm.expects(:start).with(:headless, true).once
+    should "start the VM in specified mode" do
+      mode = mock("boot_mode")
+      @runner.env.config.vm.boot_mode = mode
+      @vm.expects(:start).with(mode).once
       @action.boot
     end
   end

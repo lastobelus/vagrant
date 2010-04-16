@@ -1,39 +1,27 @@
 require File.join(File.dirname(__FILE__), '..', 'test_helper')
 
 class EnvironmentTest < Test::Unit::TestCase
-  setup do
-    mock_config
-  end
-
   context "class method check virtualbox version" do
     setup do
-      VirtualBox::Command.stubs(:version).returns("3.1.4")
-      VirtualBox::Global.stubs(:vboxconfig?).returns(true)
+      VirtualBox.stubs(:version).returns("3.1.4")
     end
 
     should "not error and exit if everything is good" do
-      VirtualBox::Command.expects(:version).returns("3.1.4")
-      VirtualBox::Global.expects(:vboxconfig?).returns(true)
+      VirtualBox.expects(:version).returns("3.1.4")
       Vagrant::Environment.expects(:error_and_exit).never
       Vagrant::Environment.check_virtualbox!
     end
 
     should "error and exit if VirtualBox is not installed or detected" do
       Vagrant::Environment.expects(:error_and_exit).with(:virtualbox_not_detected).once
-      VirtualBox::Command.expects(:version).returns(nil)
+      VirtualBox.expects(:version).returns(nil)
       Vagrant::Environment.check_virtualbox!
     end
 
     should "error and exit if VirtualBox is lower than version 3.1" do
       version = "3.0.12r1041"
       Vagrant::Environment.expects(:error_and_exit).with(:virtualbox_invalid_version, :version => version.to_s).once
-      VirtualBox::Command.expects(:version).returns(version)
-      Vagrant::Environment.check_virtualbox!
-    end
-
-    should "error and exit if the the vboxconfig is not set" do
-      VirtualBox::Global.expects(:vboxconfig?).returns(false)
-      Vagrant::Environment.expects(:error_and_exit).with(:virtualbox_xml_not_detected).once
+      VirtualBox.expects(:version).returns(version)
       Vagrant::Environment.check_virtualbox!
     end
   end
@@ -436,7 +424,7 @@ class EnvironmentTest < Test::Unit::TestCase
 
       should "initialize the Commands object with the given environment" do
         commands = mock("commands")
-        Vagrant::Commands.expects(:new).with(@env).returns(commands)
+        Vagrant::Command.expects(:new).with(@env).returns(commands)
         @env.load_commands!
         assert_equal commands, @env.commands
       end

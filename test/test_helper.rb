@@ -3,8 +3,6 @@ begin
 rescue LoadError
   # Fallback on doing the resolve at runtime.
   require "rubygems"
-  require "bundler"
-  Bundler.setup
 end
 
 # ruby-debug, not necessary, but useful if we have it
@@ -54,6 +52,7 @@ class Test::Unit::TestCase
       config.chef.node_name = "baz"
       config.chef.cookbooks_path = "cookbooks"
       config.chef.provisioning_path = "/tmp/vagrant-chef"
+      config.chef.log_level = :info
       config.chef.json = {
         :recipes => ["vagrant_main"]
       }
@@ -73,61 +72,6 @@ class Test::Unit::TestCase
     environment
   end
 
-  # Clears the previous config and sets up the new config
-  def mock_config
-    Vagrant::Config.reset!
-
-    Vagrant::Config.run do |config|
-      config.vagrant.dotfile_name = ".vagrant"
-
-      config.ssh.username = "foo"
-      config.ssh.password = "bar"
-      config.ssh.host = "baz"
-      config.ssh.forwarded_port_key = "ssh"
-      config.ssh.max_tries = 10
-      config.ssh.timeout = 10
-      config.ssh.private_key_path = '~/foo'
-
-      config.vm.box = "foo"
-      config.vm.box_ovf = "box.ovf"
-      config.vm.base_mac = "42"
-      config.vm.project_directory = "/vagrant"
-      config.vm.disk_image_format = 'VMDK'
-      config.vm.forward_port("ssh", 22, 2222)
-      config.vm.shared_folder_uid = nil
-      config.vm.shared_folder_gid = nil
-
-      config.package.name = 'vagrant'
-      config.package.extension = '.box'
-
-      # Chef
-      config.chef.chef_server_url = "http://localhost:4000"
-      config.chef.validation_key_path = "validation.pem"
-      config.chef.client_key_path = "/zoo/foo/bar.pem"
-      config.chef.cookbooks_path = "cookbooks"
-      config.chef.provisioning_path = "/tmp/vagrant-chef"
-      config.chef.json = {
-        :recipes => ["vagrant_main"]
-      }
-
-      config.vagrant.home = '~/.home'
-    end
-
-    if block_given?
-      Vagrant::Config.run do |config|
-        yield config
-      end
-    end
-
-    if block_given?
-      Vagrant::Config.run do |config|
-        yield config
-      end
-    end
-
-    Vagrant::Config.execute!
-  end
-
   # Sets up the mocks and instantiates an action for testing
   def mock_action(action_klass, *args)
     vm = mock("vboxvm")
@@ -145,7 +89,7 @@ class Test::Unit::TestCase
     [mock_vm, vm, action]
   end
 
-  def stub_default_action_dependecies(mock, klass=MockAction)
+  def stub_default_action_dependecies(mock)
     mock.stubs(:precedes).returns([])
     mock.stubs(:follows).returns([])
   end
@@ -158,7 +102,4 @@ class Test::Unit::TestCase
     [downloader_klass.new, tempfile]
   end
 end
-
-class MockAction; end
-class MockActionOther; end
 

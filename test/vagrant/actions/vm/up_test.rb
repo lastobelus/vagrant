@@ -3,7 +3,6 @@ require File.join(File.dirname(__FILE__), '..', '..', '..', 'test_helper')
 class UpActionTest < Test::Unit::TestCase
   setup do
     @runner, @vm, @action = mock_action(Vagrant::Actions::VM::Up)
-    mock_config
   end
 
   context "sub-actions" do
@@ -96,10 +95,10 @@ class UpActionTest < Test::Unit::TestCase
   context "setting up MAC address" do
     should "match the mac address with the base" do
       nic = mock("nic")
-      nic.expects(:macaddress=).once
+      nic.expects(:mac_address=).once
 
-      @vm.expects(:nics).returns([nic]).once
-      @vm.expects(:save).with(true).once
+      @vm.expects(:network_adapters).returns([nic]).once
+      @vm.expects(:save).once
 
       @action.setup_mac_address
     end

@@ -23,7 +23,7 @@ module Vagrant
 
         def clear
           logger.info "Deleting any previously set forwarded ports..."
-          @runner.vm.forwarded_ports.collect { |p| p.destroy(true) }
+          @runner.vm.forwarded_ports.collect { |p| p.destroy }
         end
 
         def forward_ports
@@ -38,7 +38,7 @@ module Vagrant
             @runner.vm.forwarded_ports << port
           end
 
-          @runner.vm.save(true)
+          @runner.vm.save
         end
       end
     end

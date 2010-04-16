@@ -12,7 +12,7 @@ module Vagrant
     attr_reader :root_path
     attr_reader :config
     attr_reader :box
-    attr_reader :vm
+    attr_accessor :vm
     attr_reader :ssh
     attr_reader :active_list
     attr_reader :commands
@@ -32,15 +32,11 @@ module Vagrant
       # VirtualBox installed is high enough. Also verifies that the
       # configuration path is properly set.
       def check_virtualbox!
-        version = VirtualBox::Command.version
+        version = VirtualBox.version
         if version.nil?
           error_and_exit(:virtualbox_not_detected)
         elsif version.to_f < 3.1
           error_and_exit(:virtualbox_invalid_version, :version => version.to_s)
-        end
-
-        if !VirtualBox::Global.vboxconfig?
-          error_and_exit(:virtualbox_xml_not_detected)
         end
       end
     end
@@ -193,11 +189,11 @@ module Vagrant
       @active_list = ActiveList.new(self)
     end
 
-    # Loads the instance of {Commands} for this environment. This allows
+    # Loads the instance of {Command} for this environment. This allows
     # users of the instance to run commands such as "up" "down" etc. in
     # the context of this environment.
     def load_commands!
-      @commands = Commands.new(self)
+      @commands = Command.new(self)
     end
 
     #---------------------------------------------------------------

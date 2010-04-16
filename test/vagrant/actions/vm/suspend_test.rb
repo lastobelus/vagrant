@@ -3,7 +3,6 @@ require File.join(File.dirname(__FILE__), '..', '..', '..', 'test_helper')
 class SuspendActionTest < Test::Unit::TestCase
   setup do
     @runner, @vm, @action = mock_action(Vagrant::Actions::VM::Suspend)
-    mock_config
   end
 
   context "executing" do
@@ -12,7 +11,7 @@ class SuspendActionTest < Test::Unit::TestCase
     end
 
     should "save the state of the VM" do
-      @vm.expects(:save_state).with(true).once
+      @vm.expects(:save_state).once
       @action.execute!
     end
 

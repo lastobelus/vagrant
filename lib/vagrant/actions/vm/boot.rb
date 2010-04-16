@@ -3,7 +3,7 @@ module Vagrant
     module VM
       class Boot < Base
         def prepare
-          @runner.env.config.vm.share_folder("vagrant-root", @runner.env.config.vm.project_directory, @runner.env.root_path)
+          @runner.env.config.vm.share_folder("v-root", @runner.env.config.vm.project_directory, @runner.env.root_path)
         end
 
         def execute!
@@ -21,7 +21,7 @@ module Vagrant
 
         def boot
           logger.info "Booting VM..."
-          @runner.vm.start(@runner.env.config.vm.bootmode.to_sym, true)
+          @runner.vm.start(@runner.env.config.vm.boot_mode)
         end
 
         def wait_for_boot(sleeptime=5)

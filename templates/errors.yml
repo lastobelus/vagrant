@@ -42,6 +42,9 @@
   vagrant box add name uri
   vagrant box remove name
   vagrant box list
+:command_deprecation_down: |-
+  `vagrant down` is now `vagrant destroy`. Please use that command instead. This
+  warning will be removed in future versions.
 :dotfile_error: |-
   The dotfile which Vagrant uses to store the UUID of the project's
   virtual machine already exists and is not a file! The dotfile is
@@ -49,9 +52,11 @@
 
   To change this value, please see `config.vagrant.dotfile_name`
 
-  This often exists if you're trying to create a Vagrant virtual
-  environment from your home directory. To resolve this, you can either
-  modify the configuration a bit, or simply use a different directory.
+  Are you trying to use Vagrant from your home directory? This is the
+  leading cause of this error message. To resolve this, simply use a
+  different directory. Or, if you really want to run Vagrant from your
+  home directory, modify the `config.vagrant.dotfile_name` configuration
+  key.
 :downloader_file_doesnt_exist: |-
   The given box does not exist on the file system:
 
@@ -85,54 +90,35 @@
 
   <%= key_path %>
 :ssh_unavailable_windows: |-
-  `vagrant ssh` isn't available on the Windows platform. The 
+  `vagrant ssh` isn't available on the Windows platform. The
   vagrant.ppk file is available at
 
      <%= key_path %>.ppk
-  
-  for use with Putty. To do this create a new Putty session for 
-  vagrant@localhost on port <%= ssh_port %>, in the Connection>SSH>Auth 
-  configuration section navigate to the vagrant.ppk file, 
-  select it, save the session for later use, and connect. 
+
+  for use with Putty. To do this create a new Putty session for
+  `vagrant@localhost` on port `<%= ssh_port %>`, in the Connection>SSH>Auth
+  configuration section navigate to the vagrant.ppk file,
+  select it, save the session for later use, and connect.
 
   For a more detailed guide please consult:
 
      http://vagrantup.com/docs/getting-started/windows.html
 
 :virtualbox_import_failure: |-
-  The VM import failed! Try running `VBoxManage import` on the box file manually for more verbose error output.
+  The VM import failed! Try running `VBoxManage import` on the box file
+  manually for more verbose error output.
 :virtualbox_invalid_version: |-
   Vagrant has detected that you have VirtualBox version <%= version %> installed!
   Vagrant requires that you use at least VirtualBox version 3.1. Please install
   a more recent version of VirtualBox to continue.
 :virtualbox_not_detected: |-
   Vagrant could not detect VirtualBox! Make sure VirtualBox is properly installed.
-  If VirtualBox is installed, you may need to tweak the paths to the `VBoxManage`
-  application which ships with VirtualBox and the path to the global XML configuration
-  which VirtualBox typically stores somewhere in your home directory.
-
-  The following shows how to configure VirtualBox. This can be done in the
-  Vagrantfile. Note that 90% of the time, you shouldn't need to do this if VirtualBox
-  is installed. Please use the various Vagrant support lines to request more information
-  if you can't get this working.
-
-  VirtualBox::Command.vboxmanage = "/path/to/my/VBoxManage"
-  VirtualBox::Global.vboxconfig = "~/path/to/VirtualBox.xml"
-:virtualbox_xml_not_detected: |-
-  Vagrant couldn't find your global VirtualBox.xml file!
-
-  If you just recently installed VirtualBox, make sure you've launched
-  it at least once, since the initial launch will typically create this
-  file.
-
-  Otherwise, you may need to set the path to the VirtualBox.xml file
-  manually. Note that 90% of people should never have to do this, so
-  don't be afraid to use the various Vagrant support lines to ask for
-  help. To set the path manually:
-
-  VirtualBox::Global.vboxconfig = "/path/to/VirtualBox.xml"
+  If VirtualBox is installed, it may be an incorrect version. Vagrant currently
+  only supports VirtualBox 3.1.x. Please install the proper version to continue.
 :vm_failed_to_boot: |-
   Failed to connect to VM! Failed to boot?
+:vm_base_not_found: |-
+  The specified base VM "<%= name %>" was not found.
 :vm_not_running: |-
   VM is not running! Nothing to shut down!
 :vm_not_running_for_suspend: |-
