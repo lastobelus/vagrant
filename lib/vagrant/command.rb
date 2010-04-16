@@ -9,8 +9,7 @@ module Vagrant
       # Executes a given subcommand within the current environment (from the
       # current working directory).
       def execute(*args)
-        env = Environment.load!
-        env.commands.subcommand(*args)
+        Commands::Base.dispatch(nil, *args)
       end
     end
 

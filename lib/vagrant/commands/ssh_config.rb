@@ -9,7 +9,6 @@ module Vagrant
       def execute(args=[])
         env.require_root_path
 
-        parse_options(args)
         puts TemplateRenderer.render("ssh_config", {
           :host_key => options[:host] || "vagrant",
           :ssh_user => env.config.ssh.username,

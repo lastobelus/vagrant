@@ -8,7 +8,6 @@ module Vagrant
       description "Packages a vagrant environment for distribution"
 
       def execute(args=[])
-        parse_options(args)
 
         if !options[:base]
           # Packaging a pre-existing environment

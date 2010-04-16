@@ -37,7 +37,7 @@ module Vagrant
           klass = subcommands[args[0]] unless args.empty?
           if klass.nil?
             # Run _this_ command!
-            command = self.new(env)
+            command = self.new(args) # this will pull options out of args via OptionParser
             command.execute(args)
             return
           end
@@ -76,16 +76,16 @@ module Vagrant
         end
       end
 
-      def initialize(env)
-        @env = env
+      def initialize(args)
+        parse_options(args)
+        @env = Environment.load!(:vagrantfile => options[:vagrantfile])
       end
 
       # This method should be overriden by subclasses. This is the method
       # which is called by {Vagrant::Command} when a command is being
       # executed. The `args` parameter is an array of parameters to the
       # command (similar to ARGV)
-      def execute(args)
-        parse_options(args)
+      def execute(args=[])
 
         if options[:version]
           puts_version
