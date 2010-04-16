@@ -86,7 +86,6 @@ module Vagrant
       # executed. The `args` parameter is an array of parameters to the
       # command (similar to ARGV)
       def execute(args=[])
-
         if options[:version]
           puts_version
         else

@@ -3,7 +3,8 @@ require File.join(File.dirname(__FILE__), '..', 'test_helper')
 class EnvironmentTest < Test::Unit::TestCase
   context "class method check virtualbox version" do
     setup do
-VirtualBox.stubs(:version).returns("3.1.4")    end
+      VirtualBox.stubs(:version).returns("3.1.4")
+    end
 
     should "not error and exit if everything is good" do
       VirtualBox.expects(:version).returns("3.1.4")
@@ -13,7 +14,7 @@ VirtualBox.stubs(:version).returns("3.1.4")    end
 
     should "error and exit if VirtualBox is not installed or detected" do
       Vagrant::Environment.expects(:error_and_exit).with(:virtualbox_not_detected).once
-      VirtualBox::Command.expects(:version).returns(nil)
+      VirtualBox.expects(:version).returns(nil)
       Vagrant::Environment.check_virtualbox!
     end
 

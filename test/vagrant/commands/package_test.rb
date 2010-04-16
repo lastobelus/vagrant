@@ -11,7 +11,8 @@ class CommandsPackageTest < Test::Unit::TestCase
     @env.stubs(:require_persisted_vm)
     @env.stubs(:vm).returns(@persisted_vm)
 
-    @instance = @klass.new(@env)
+    Vagrant::Environment.stubs(:load!).returns(@env)    
+    @instance = @klass.new([])
   end
 
   context "executing" do
@@ -29,28 +30,32 @@ class CommandsPackageTest < Test::Unit::TestCase
 
     context "with base specified" do
       setup do
+        @name = "bar"
         @vm = mock("vm")
 
         Vagrant::VM.stubs(:find).with(@name).returns(@vm)
         @vm.stubs(:env=).with(@env)
         @env.stubs(:vm=)
 
-        @name = "bar"
       end
 
       should "find the given base and set it on the env" do
+        args = ["foo", "--base", @name]
         Vagrant::VM.expects(:find).with(@name).returns(@vm)
         @vm.expects(:env=).with(@env)
         @env.expects(:vm=).with(@vm)
 
-        @instance.execute(["foo", "--base", @name])
+        @instance = @klass.new(args)
+        @instance.execute(args)
       end
 
       should "error if the VM is not found" do
+        args = ["foo", "--base", @name]
         Vagrant::VM.expects(:find).with(@name).returns(nil)
+        @instance = @klass.new(args)
         @instance.expects(:error_and_exit).with(:vm_base_not_found, :name => @name).once
 
-        @instance.execute(["foo", "--base", @name])
+        @instance.execute(args)
       end
     end
 
@@ -71,12 +76,15 @@ class CommandsPackageTest < Test::Unit::TestCase
         out_path = mock("out_path")
         include_files = "foo"
         @persisted_vm.expects(:package).with(out_path, [include_files]).once
-        @instance.execute([out_path, "--include", include_files])
+        args = [out_path, "--include", include_files]
+        @instance = @klass.new(args)
+        @instance.execute(args)
       end
 
       should "default to an empty array when not include_files are specified" do
         out_path = mock("out_path")
         @persisted_vm.expects(:package).with(out_path, []).once
+        @instance = @klass.new([out_path])
         @instance.execute([out_path])
       end
     end

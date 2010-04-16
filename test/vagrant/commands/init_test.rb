@@ -5,7 +5,9 @@ class CommandsInitTest < Test::Unit::TestCase
     @klass = Vagrant::Commands::Init
 
     @env = mock_environment
-    @instance = @klass.new(@env)
+    Vagrant::Environment.stubs(:load!).returns(@env)
+    
+    @instance = @klass.new([])
   end
 
   context "execute" do

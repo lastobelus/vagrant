@@ -5,6 +5,7 @@ class CommandsUpTest < Test::Unit::TestCase
     @klass = Vagrant::Commands::Up
 
     @env = mock_environment
+    Vagrant::Environment.stubs(:load!).returns(@env)    
     @instance = @klass.new([])
 
     @persisted_vm = mock("persisted_vm")

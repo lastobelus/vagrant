@@ -11,7 +11,8 @@ class CommandsSSHConfigTest < Test::Unit::TestCase
     @env.stubs(:require_persisted_vm)
     @env.stubs(:vm).returns(@persisted_vm)
 
-    @instance = @klass.new(@env)
+    Vagrant::Environment.stubs(:load!).returns(@env)    
+    @instance = @klass.new([])
   end
 
   context "executing" do
@@ -46,9 +47,11 @@ class CommandsSSHConfigTest < Test::Unit::TestCase
 
     should "render with the given host name if given" do
       host = "foo"
+      args = ["--host", host]
       @data[:host_key] = host
-      Vagrant::Util::TemplateRenderer.expects(:render).with("ssh_config", @data)
-      @instance.execute(["--host", host])
+      Vagrant::Util::TemplateRenderer.expects(:render).with("ssh_config", @data).returns("")
+      @instance = @klass.new(args)
+      @instance.execute(args)
     end
   end
 end

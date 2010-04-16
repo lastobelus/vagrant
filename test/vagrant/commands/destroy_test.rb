@@ -10,8 +10,9 @@ class CommandsDestroyTest < Test::Unit::TestCase
     @env = mock_environment
     @env.stubs(:require_persisted_vm)
     @env.stubs(:vm).returns(@persisted_vm)
-
-    @instance = @klass.new(@env)
+    Vagrant::Environment.stubs(:load!).returns(@env)
+    
+    @instance = @klass.new([])
   end
 
   context "executing" do
