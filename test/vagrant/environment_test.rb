@@ -1,27 +1,39 @@
 require File.join(File.dirname(__FILE__), '..', 'test_helper')
 
 class EnvironmentTest < Test::Unit::TestCase
+  setup do
+    mock_config
+  end
+
   context "class method check virtualbox version" do
     setup do
-      VirtualBox.stubs(:version).returns("3.1.4")
+      VirtualBox::Command.stubs(:version).returns("3.1.4")
+      VirtualBox::Global.stubs(:vboxconfig?).returns(true)
     end
 
     should "not error and exit if everything is good" do
-      VirtualBox.expects(:version).returns("3.1.4")
+      VirtualBox::Command.expects(:version).returns("3.1.4")
+      VirtualBox::Global.expects(:vboxconfig?).returns(true)
       Vagrant::Environment.expects(:error_and_exit).never
       Vagrant::Environment.check_virtualbox!
     end
 
     should "error and exit if VirtualBox is not installed or detected" do
       Vagrant::Environment.expects(:error_and_exit).with(:virtualbox_not_detected).once
-      VirtualBox.expects(:version).returns(nil)
+      VirtualBox::Command.expects(:version).returns(nil)
       Vagrant::Environment.check_virtualbox!
     end
 
     should "error and exit if VirtualBox is lower than version 3.1" do
       version = "3.0.12r1041"
       Vagrant::Environment.expects(:error_and_exit).with(:virtualbox_invalid_version, :version => version.to_s).once
-      VirtualBox.expects(:version).returns(version)
+      VirtualBox::Command.expects(:version).returns(version)
+      Vagrant::Environment.check_virtualbox!
+    end
+
+    should "error and exit if the the vboxconfig is not set" do
+      VirtualBox::Global.expects(:vboxconfig?).returns(false)
+      Vagrant::Environment.expects(:error_and_exit).with(:virtualbox_xml_not_detected).once
       Vagrant::Environment.check_virtualbox!
     end
   end
@@ -35,13 +47,14 @@ class EnvironmentTest < Test::Unit::TestCase
     end
 
     should "create the environment with given cwd, load it, and return it" do
-      Vagrant::Environment.expects(:new).with(@cwd).once.returns(@env)
+      opts = {:cwd =>@cwd}
+      Vagrant::Environment.expects(:new).with(opts).once.returns(@env)
       @env.expects(:load!).returns(@env)
-      assert_equal @env, Vagrant::Environment.load!(@cwd)
+      assert_equal @env, Vagrant::Environment.load!(opts)
     end
 
     should "work without a given cwd" do
-      Vagrant::Environment.expects(:new).with(nil).returns(@env)
+      Vagrant::Environment.expects(:new).with({}).returns(@env)
 
       assert_nothing_raised {
         env = Vagrant::Environment.load!
@@ -52,9 +65,9 @@ class EnvironmentTest < Test::Unit::TestCase
 
   context "initialization" do
     should "set the cwd if given" do
-      cwd = "foobarbaz"
-      env = Vagrant::Environment.new(cwd)
-      assert_equal cwd, env.cwd
+      opts = {:cwd =>"foobarbaz"}
+      env = Vagrant::Environment.new(opts)
+      assert_equal "foobarbaz", env.cwd
     end
 
     should "default to pwd if cwd is nil" do
@@ -200,6 +213,7 @@ class EnvironmentTest < Test::Unit::TestCase
         assert @env.load_root_path!(Pathname.new(path))
         assert_equal path, @env.root_path
       end
+      
     end
 
     context "loading config" do
@@ -221,6 +235,12 @@ class EnvironmentTest < Test::Unit::TestCase
 
       should "load from the project root" do
         File.expects(:exist?).with(File.join(PROJECT_ROOT, "config", "default.rb")).once
+        @env.load_config!
+      end
+
+      should "load from specified vagrantfile" do
+        @env.vagrantfile = "/foo/Vagrantfoo"
+        File.expects(:exist?).with(File.expand_path("/foo/Vagrantfoo")).once
         @env.load_config!
       end
 
@@ -424,7 +444,7 @@ class EnvironmentTest < Test::Unit::TestCase
 
       should "initialize the Commands object with the given environment" do
         commands = mock("commands")
-        Vagrant::Command.expects(:new).with(@env).returns(commands)
+        Vagrant::Commands.expects(:new).with(@env).returns(commands)
         @env.load_commands!
         assert_equal commands, @env.commands
       end
