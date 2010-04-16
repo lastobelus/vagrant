@@ -3,6 +3,8 @@ begin
 rescue LoadError
   # Fallback on doing the resolve at runtime.
   require "rubygems"
+  require "bundler"
+  Bundler.setup
 end
 
 # ruby-debug, not necessary, but useful if we have it
