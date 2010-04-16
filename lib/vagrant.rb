@@ -7,6 +7,7 @@ PROJECT_ROOT = File.join(libdir, '..') unless defined?(PROJECT_ROOT)
   require lib
 end
 
+
 # The vagrant specific files which must be loaded prior to the rest
 %w{vagrant/util vagrant/util/stacked_proc_runner vagrant/util/progress_meter vagrant/actions/base vagrant/downloaders/base vagrant/actions/collection
   vagrant/actions/runner vagrant/config vagrant/provisioners/base vagrant/provisioners/chef vagrant/commands/base vagrant/commands/box}.each do |f|

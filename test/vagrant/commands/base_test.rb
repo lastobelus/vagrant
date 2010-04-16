@@ -8,7 +8,9 @@ class CommandsBaseTest < Test::Unit::TestCase
   context "initializing" do
     should "setup the env attribute" do
       env = mock("env")
-      instance = @klass.new(env)
+      Vagrant::Environment.expects(:load!).returns(env)
+      args =[]
+      instance = @klass.new(args)
       assert_equal env, instance.env
     end
   end
@@ -43,7 +45,7 @@ class CommandsBaseTest < Test::Unit::TestCase
 
       should "instantiate and execute when no subcommand is found" do
         instance = mock("instance")
-        @klass.expects(:new).with(@env).returns(instance)
+        @klass.expects(:new).with(@args).returns(instance)
         instance.expects(:execute).with(@args)
         @klass.dispatch(@env, *@args)
       end
@@ -61,11 +63,12 @@ class CommandsBaseTest < Test::Unit::TestCase
   context "instance methods" do
     setup do
       @env = mock_environment
-      @instance = @klass.new(@env)
+      @instance = @klass.new([])
     end
 
     context "executing" do
       should "show version if flag is set" do
+        @instance = @klass.new(["--version"])
         @instance.expects(:puts_version).once
         @instance.expects(:puts_help).never
         @instance.execute(["--version"])

@@ -16,6 +16,11 @@ module Vagrant
 
       def options_spec(opts)
         opts.banner = "Usage: vagrant reload"
+
+        opts.on("--vagrantfile VAGRANTFILE", "path to a vagrantfile to use") do |v|
+          options[:vagrantfile] = v
+        end
+
       end
     end
   end

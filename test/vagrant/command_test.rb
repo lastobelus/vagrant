@@ -18,12 +18,8 @@ class CommandTest < Test::Unit::TestCase
 
   context "class methods" do
     context "executing" do
-      should "load the environment then send the command on commands" do
-        env = mock("env")
-        commands = mock("commands")
-        env.stubs(:commands).returns(commands)
-        Vagrant::Environment.expects(:load!).returns(env)
-        commands.expects(:subcommand).with(1,2,3).once
+      should "dispatch a command to base" do
+        Vagrant::Commands::Base.expects(:dispatch).with(nil,1,2,3).once
 
         @klass.execute(1,2,3)
       end

@@ -39,6 +39,11 @@ module Vagrant
         opts.on("--include x,y,z", Array, "List of files to include in the package") do |v|
           options[:include] = v
         end
+
+        opts.on("--vagrantfile VAGRANTFILE", "path to a vagrantfile to use") do |v|
+          options[:vagrantfile] = v
+        end
+
       end
     end
   end
