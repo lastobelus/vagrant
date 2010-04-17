@@ -107,6 +107,16 @@ module Vagrant
     # This method allows an environment in `/foo` to be detected from
     # `/foo/bar` (similar to how git works in subdirectories)
     def load_root_path!(path=nil)
+      # if the vagrantfile was specified, we don't want to recurse, but just make sure it exists
+      unless vagrantfile.nil?
+        if File.exist? vagrantfile
+          @root_path = File.expand_path(File.dirname(vagrantfile))
+          return true
+        else
+          return false
+        end
+      end
+        
       path = Pathname.new(File.expand_path(path || cwd))
 
       # Stop if we're at the root.
