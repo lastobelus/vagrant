@@ -13,7 +13,7 @@ Gem::Specification.new do |s|
   s.default_executable = %q{vagrant}
   s.description = %q{Vagrant is a tool for building and distributing virtualized development environments.}
   s.email = ["mitchell.hashimoto@gmail.com", "john.m.bender@gmail.com"]
-  s.executables = ["vagrant", "vagrant-provision"]
+  s.executables = ["vagrant"]
   s.extra_rdoc_files = [
     "LICENSE",
      "README.md"
@@ -27,7 +27,6 @@ Gem::Specification.new do |s|
      "VERSION",
      "bin/.gitignore",
      "bin/vagrant",
-     "bin/vagrant-provision",
      "config/default.rb",
      "keys/README.md",
      "keys/vagrant",
