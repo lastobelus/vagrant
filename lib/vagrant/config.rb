@@ -86,7 +86,6 @@ module Vagrant
       attr_accessor :provisioner
       attr_accessor :shared_folder_uid
       attr_accessor :shared_folder_gid
-      attr_accessor :bootmode
       
       def initialize
         @forwarded_ports = {}
